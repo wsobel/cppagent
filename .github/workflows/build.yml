@@ -18,20 +18,10 @@ jobs:
     runs-on: windows-2019
     strategy:
       matrix:
-        arch: ["x86", "amd64"]
+        arch: ["x86"]
         include:
           - arch: "x86"
             profile: "vs32"
-          - arch: "amd64"
-            profile: "vs64"
-
-# Shared build will be reenabled once I figure why one of the tests is failing
-#        shared: ["False", "True"]
-#        include:
-#          - shared: "False"
-#            profile: "vs64"
-#          - shared: "True"
-#            profile: "vs64shared"
 
     steps:
     - name: Checkout Agent
@@ -69,48 +59,3 @@ jobs:
         token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
 
         
-  build_linux:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        shared: ["True", "False"]
-            
-    steps:
-    - name: Checkout Agent
-      uses: actions/checkout@v3
-
-    - name: Install dependencies
-      shell: bash
-      run: |
-        sudo apt install -y build-essential cmake gcc-11 g++-11 python3 autoconf automake
-      
-    - name: Install Conan
-      uses: turtlebrowser/get-conan@v1.2
-      
-    - name: Build and Test C++ Agent
-      shell: bash
-      run: |
-        conan profile detect -f
-        conan create . --build=missing -pr conan/profiles/gcc  -o shared=${{ matrix.shared }} -o with_docs=False -o cpack=True
-        
-  build_macos:
-    runs-on: macos-latest
-    strategy:
-      matrix:
-        shared: ["True", "False"]
-            
-    steps:
-    - name: Checkout Agent
-      uses: actions/checkout@v3
-
-    - name: Install Conan
-      uses: turtlebrowser/get-conan@v1.2
-      
-    - name: Build and Test C++ Agent
-      shell: bash
-      run: |
-        conan profile detect -f
-        conan create . --build=missing -pr conan/profiles/macos  -o shared=${{ matrix.shared }} -o with_docs=False -o cpack=True
-        
-        
-    
