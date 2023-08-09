@@ -9,6 +9,8 @@ on:
   push:
     paths-ignore: ["**/*.md", "LICENSE.txt", ".gitignore"]
     branches: [ "main", "main-dev" ]
+    tags:
+      - "v*.*.*"
 
   # Allow manually run workflows
   workflow_dispatch:
