@@ -29,7 +29,7 @@ jobs:
       with:
         result-encoding: string
         script: |
-          return '${{ github.workspace }}'.replaceAll('\\', '/').replace(/\/[a-zA-Z]+$/, '/')
+          return context.github.workspace.replaceAll('\\', '/').replace(/\/[a-zA-Z]+$/, '/')
 
 
   build_windows:
