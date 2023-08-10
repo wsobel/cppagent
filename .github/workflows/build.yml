@@ -27,9 +27,9 @@ jobs:
       id: fixed_path
       run: |
         $pattern = '[\\]'
-        $temp = "${{ github.workspace }}" -replace $pattern, '/'
-        echo $temp
-        echo $temp >> $GITHUB_OUTPUT
+        $dir = "${{ github.workspace }}" -replace $pattern, '/'
+        echo $dir
+        echo "dir=$dir" >> "$GITHUB_OUTPUT"
 
     - name: Setup Base Path
       id: base_path
@@ -37,7 +37,7 @@ jobs:
       with:
         result-encoding: string
         script: |
-          dir =  "${{ steps.fixed_path.output }}".replaceAll('\\', '/').replace(/\/[a-zA-Z]+@$/, '/')
+          dir =  "${{ steps.fixed_path.outputs.dir }}".replaceAll('\\', '/').replace(/\/[a-zA-Z]+@$/, '/')
           console.log("Base Directory: " + dir)
           return dir
 
