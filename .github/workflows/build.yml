@@ -36,8 +36,8 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Cache conan packages
-      id: uses
-      cache: actions/cache@v3
+      id: cache
+      uses: actions/cache@v3
       with:
         path: ${{ github.workspace }}/../.conan2
         key: ${{ runner.os }}-build-${{ matrix.arch }}-${{ hashFiles('**/conanfile.py') }}
