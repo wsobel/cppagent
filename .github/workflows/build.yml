@@ -21,17 +21,19 @@ jobs:
     env:
       CONAN_HOME:  ${{ github.workspace }}/..
     strategy:
+      arch: ["x86", "amd64"]
+      shared: ["True", "False"]
       matrix:
         include:
           - arch: "x86"
             profile: "vs32"
-            shared: "False"
           - arch: "amd64"
             profile: "vs64"
-            shared: "False"
-          - arch: "amd64"
-            shared: "True"
+          - shared: "True"
             profile: "vs64shared"
+        exclude:
+          - arch: "x86"
+            shared: "True"
 
     steps:
     - name: Checkout Agent
