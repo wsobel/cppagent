@@ -23,7 +23,7 @@ jobs:
       zip_dir: "${{ steps.base_path.outputs.result }}/"
       
     steps:
-    - name: Try powershell
+    - name: Use Powershell to Create path
       id: fixed_path
       run: |
         $pattern = '[\\]'
@@ -37,7 +37,8 @@ jobs:
       with:
         result-encoding: string
         script: |
-          dir =  "${{ steps.fixed_path.outputs.dir }}".replaceAll('\\', '/').replace(/\/[a-zA-Z]+@$/, '/')
+          console.log(${{ steps.fixed_path.outputs.dir }})
+          dir =  "${{ steps.fixed_path.outputs.dir }}".replace(/\/[a-zA-Z]+@$/, '/')
           console.log("Base Directory: " + dir)
           return dir
 
