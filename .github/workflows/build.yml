@@ -19,7 +19,7 @@ jobs:
   build_windows:
     runs-on: windows-2019
     env:
-      CONAN_HOME:  ${{ github.workspace }}/..
+      CONAN_HOME:  ${{ github.workspace }}/.conan2
     strategy:
       arch: ["x86", "amd64"]
       shared: ["True", "False"]
@@ -43,7 +43,7 @@ jobs:
       id: cache
       uses: actions/cache@v3
       with:
-        path: ${{ github.workspace }}/../.conan2
+        path: ${{ env.CONAN_HOME }}
         key: ${{ runner.os }}-build-${{ matrix.arch }}-${{ hashFiles('**/conanfile.py') }}
 
     - name: Install Conan
@@ -67,7 +67,7 @@ jobs:
 
     - name: Release
       uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/') && matrix.shared == 'False'
+      if: ${{ startsWith(github.ref, 'refs/tags/') && matrix.shared == 'False' }}
       with:
         name: Version ${{ github.ref_name }}
         draft: true
