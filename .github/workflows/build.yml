@@ -21,9 +21,9 @@ jobs:
     env:
       CONAN_HOME: "${{ github.workspace }}/.conan2"
     strategy:
-      arch: ["x86", "amd64"]
-      shared: ["True", "False"]
       matrix:
+        arch: ["x86", "amd64"]
+        shared: ["True", "False"]
         include:
           - arch: "x86"
             profile: "vs32"
