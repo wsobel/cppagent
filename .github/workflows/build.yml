@@ -22,15 +22,19 @@ jobs:
       conan_dir: "${{ steps.base_path.outputs.result }}/conan2"
       zip_dir: "${{ steps.base_path.outputs.result }}/"
       
-    steps:  
+    steps:
+    - name: Checkout Agent
+      uses: actions/checkout@v3
+      
     - name: Setup Base Path
       id: base_path
       uses: actions/github-script@v6
       with:
         result-encoding: string
         script: |
-          console.log(github)
-          return "${{ github.workspace }}@".replaceAll('\\', '/').replace(/\/[a-zA-Z]+@$/, '/')
+          dir =  "${{ github.workspace }}".replaceAll('\\', '/').replace(/\/[a-zA-Z]+@$/, '/')
+          console.log("Base Directory: " + dir)
+          return dir
 
 
   build_windows:
