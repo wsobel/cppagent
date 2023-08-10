@@ -37,7 +37,7 @@ jobs:
       env:
        cache-name: cache-conan-packages
       with:
-        path: ~/.conan2
+        path: C:/Users/runneradmin/.conan2
         key: ${{ runner.os }}-build-${{ matrix.arch }}-${{ hashFiles('**/conanfile.py') }}
 
     - name: Install Conan
