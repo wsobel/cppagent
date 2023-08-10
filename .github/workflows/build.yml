@@ -23,13 +23,16 @@ jobs:
     strategy:
       matrix:
         arch: ["x86", "amd64"]
-        shared: ["True", "False"]
         include:
           - arch: "x86"
             profile: "vs32"
             shared: "False"
           - arch: "amd64"
             profile: "vs64"
+            shared: "False"
+          - arch: "amd64"
+            profile: "vs64shared"
+            shared: "True"
 
     steps:
     - name: Checkout Agent
@@ -63,7 +66,7 @@ jobs:
 
     - name: Release
       uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/') 
+      if: startsWith(github.ref, 'refs/tags/') && matrix.shared == "False"
       with:
         name: Version ${{ github.ref_name }}
         draft: true
