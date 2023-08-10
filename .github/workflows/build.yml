@@ -23,6 +23,7 @@ jobs:
     strategy:
       matrix:
         arch: ["x86", "amd64"]
+        shared: ["True", "False"]
         include:
           - arch: "x86"
             profile: "vs32"
