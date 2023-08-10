@@ -30,9 +30,9 @@ jobs:
           - arch: "amd64"
             profile: "vs64"
             shared: "False"
-          - arch: "amd64"
+          - shared: "True"
+            arch: "amd64"
             profile: "vs64shared"
-            shared: "True"
 
     steps:
     - name: Checkout Agent
