@@ -23,16 +23,21 @@ jobs:
       zip_dir: "${{ steps.base_path.outputs.result }}/"
       
     steps:
-    - name: Checkout Agent
-      uses: actions/checkout@v3
-      
+    - name: Try powershell
+      id: fixed_path
+      run: |
+        $temp = $GITHUB_WORKSPACE
+        $pattern = '[\\]'
+        $temp = $temp -replace $pattern, '/'
+        echo $temp >> $GITHUB_OUTPUT
+
     - name: Setup Base Path
       id: base_path
       uses: actions/github-script@v6
       with:
         result-encoding: string
         script: |
-          dir =  "${{ github.workspace }}".replaceAll('\\', '/').replace(/\/[a-zA-Z]+@$/, '/')
+          dir =  "${{ steps.fixed_path.output }}".replaceAll('\\', '/').replace(/\/[a-zA-Z]+@$/, '/')
           console.log("Base Directory: " + dir)
           return dir
 
