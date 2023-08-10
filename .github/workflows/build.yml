@@ -29,7 +29,7 @@ jobs:
         $pattern = '[\\]'
         $dir = "${{ github.workspace }}" -replace $pattern, '/'
         echo $dir
-        echo "dir=$dir" >> "$GITHUB_OUTPUT"
+        echo "dir=$dir" >> $GITHUB_OUTPUT
 
     - name: Setup Base Path
       id: base_path
