@@ -26,7 +26,7 @@ jobs:
     - name: Use Powershell to Create path
       id: base_path
       run: |
-        ruby ruby -e "puts 'result=' + '${{ github.workspace }}'.gsub('\\', '/').sub(/\/[a-zA-Z]+$/, '')" >> "$env:GITHUB_OUTPUT"
+        ruby -e "puts 'result=' + '${{ github.workspace }}'.gsub('\\', '/').sub(/\/[a-zA-Z]+$/, '')" >> "$env:GITHUB_OUTPUT"
 
   build_windows:
     runs-on: windows-2019
