@@ -22,8 +22,6 @@ jobs:
       CONAN_HOME:  ${{ github.workspace }}/..
     strategy:
       matrix:
-        arch: ["x86", "amd64"]
-        shared: ["True", "False"]
         include:
           - arch: "x86"
             profile: "vs32"
@@ -31,8 +29,9 @@ jobs:
           - arch: "amd64"
             profile: "vs64"
             shared: "False"
-          - shared: "True"
-            arch: "amd64"
+          - arch: "amd64"
+            profile: "vs64"
+            shared: "True"
             profile: "vs64shared"
 
     steps:
