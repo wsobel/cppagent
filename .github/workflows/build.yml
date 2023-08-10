@@ -21,9 +21,11 @@ jobs:
     strategy:
       matrix:
         arch: ["x86", "amd64"]
+        shared: ["True", "False"]
         include:
           - arch: "x86"
             profile: "vs32"
+            shared: "False"
           - arch: "amd64"
             profile: "vs64"
 
@@ -48,11 +50,16 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
         host_arch: ${{ matrix.arch }}
-          
-    - name: Build and Test C++ Agent
+
+    - name: Setup and Cleanup Conan
+      continue-on-error: true
       run: |
         conan profile detect -f
-        conan create . --build=missing -pr conan/profiles/${{ matrix.profile }} -o with_docs=False -o cpack=True -o zip_destination=${{ github.workspace }} --test-folder= -c tools.build:skip_test=True
+        conan remove mtconnect_agent -c        
+      
+    - name: Build and Test C++ Agent
+      run: |
+        conan create . --build=missing -pr conan/profiles/${{ matrix.profile }} -o with_docs=False -o cpack=True -o zip_destination=${{ github.workspace }} --test-folder= -c tools.build:skip_test=True -o shared=${{ matrix.shared }}
 
     - name: Release
       uses: softprops/action-gh-release@v1
