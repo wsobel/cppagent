@@ -30,7 +30,6 @@ jobs:
             profile: "vs64"
             shared: "False"
           - arch: "amd64"
-            profile: "vs64"
             shared: "True"
             profile: "vs64shared"
 
