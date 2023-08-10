@@ -24,24 +24,12 @@ jobs:
       
     steps:
     - name: Use Powershell to Create path
-      id: fixed_path
+      id: base_path
       run: |
         $pattern = '[\\]'
         $dir = "${{ github.workspace }}" -replace $pattern, '/'
         echo $dir
-        echo "dir=$dir" >> "$env:GITHUB_OUTPUT"
-
-    - name: Setup Base Path
-      id: base_path
-      uses: actions/github-script@v6
-      with:
-        result-encoding: string
-        script: |
-          console.log(${{ steps.fixed_path.outputs.dir }})
-          dir =  "${{ steps.fixed_path.outputs.dir }}".replace(/\/[a-zA-Z]+@$/, '/')
-          console.log("Base Directory: " + dir)
-          return dir
-
+        echo "result=$dir" >> "$env:GITHUB_OUTPUT"
 
   build_windows:
     runs-on: windows-2019
