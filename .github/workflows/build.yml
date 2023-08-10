@@ -80,7 +80,7 @@ jobs:
         name: Version ${{ github.ref_name }}
         draft: true
         files: |
-          ${{ git.workspace.replaceAll('\\', '/') }}/agent*.zip
+          ${{ steps.release-path.outputs.result }}/agent*.zip
         token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
 
         
