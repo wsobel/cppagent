@@ -26,9 +26,9 @@ jobs:
     - name: Try powershell
       id: fixed_path
       run: |
-        $temp = $GITHUB_WORKSPACE
         $pattern = '[\\]'
-        $temp = $temp -replace $pattern, '/'
+        $temp = "${{ github.workspace }}" -replace $pattern, '/'
+        echo $temp
         echo $temp >> $GITHUB_OUTPUT
 
     - name: Setup Base Path
