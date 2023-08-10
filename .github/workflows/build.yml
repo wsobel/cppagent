@@ -22,6 +22,7 @@ jobs:
       conan_dir: "${{ steps.base_path.outputs.result }}/conan2"
       zip_dir: "${{ steps.base_path.outputs.result }}/"
       
+    steps:  
     - name: Setup Base Path
       id: base_path
       uses: actions/github-script@v6
