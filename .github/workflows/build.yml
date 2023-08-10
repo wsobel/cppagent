@@ -16,10 +16,26 @@ on:
   workflow_dispatch:
 
 jobs:
+  conan_home:
+    runs-on: windows-2019
+    outputs:
+      conan_dir: "${{ steps.base_path.outputs.result }}/conan2"
+      zip_dir: "${{ steps.base_path.outputs.result }}/"
+      
+    - name: Setup Base Path
+      id: base_path
+      uses: actions/github-script@v6
+      with:
+        result-encoding: string
+        script: |
+          return "${{ github.workspace }}".replaceAll('\\', '/').replace(/\/[a-zA-Z]+$/, '/')
+
+
   build_windows:
     runs-on: windows-2019
+    needs: conan_home
     env:
-      CONAN_HOME: "${{ github.workspace }}/.conan2"
+      CONAN_HOME: "${{ needs.conan_home.outputs.conan_dir }}"
     strategy:
       matrix:
         arch: ["x86", "amd64"]
@@ -44,7 +60,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ${{ env.CONAN_HOME }}
-        key: ${{ runner.os }}-build-${{ matrix.arch }}-${{ hashFiles('**/conanfile.py') }}
+        key: ${{ runner.os }}-build-${{ matrix.profile }}-${{ hashFiles('**/conanfile.py') }}
 
     - name: Install Conan
       uses: turtlebrowser/get-conan@v1.2
@@ -63,15 +79,7 @@ jobs:
       
     - name: Build and Test C++ Agent
       run: |
-        conan create . --build=missing -pr conan/profiles/${{ matrix.profile }} -o with_docs=False -o cpack=True -o zip_destination=${{ github.workspace }} --test-folder= -c tools.build:skip_test=True -o shared=${{ matrix.shared }}
-
-    - name: Setup Release Path
-      id: releasae-path
-      uses: actions/github-script@v6
-      with:
-        result-encoding: string
-        script: |
-          return "${{ github.workspace }}".replaceAll('\\', '/')
+        conan create . --build=missing -pr conan/profiles/${{ matrix.profile }} -o with_docs=False -o cpack=True -o zip_destination=${{ needs.conan_home.outputs.zip_dir }} --test-folder= -c tools.build:skip_test=True -o shared=${{ matrix.shared }}
 
     - name: Release
       uses: softprops/action-gh-release@v1
@@ -80,7 +88,7 @@ jobs:
         name: Version ${{ github.ref_name }}
         draft: true
         files: |
-          ${{ steps.release-path.outputs.result }}/agent*.zip
+          ${{ needs.conan_home.outputs.zip_dir }}/agent*.zip
         token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
 
         
