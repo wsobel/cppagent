@@ -92,5 +92,82 @@ jobs:
         files: |
           ${{ env.ZIP_DIR }}/agent*.zip
         token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+        
+  build_linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        shared: ["True", "False"]
+            
+    steps:
+    - name: Install dependencies
+      shell: bash
+      run: |
+        sudo apt install -y build-essential cmake gcc-11 g++-11 python3 autoconf automake
+      
+    - name: Checkout Agent
+      uses: actions/checkout@v3
 
+    - name: Cache conan packages
+      id: cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.conan2
+        key: ${{ runner.os }}-build-${{ matrix.shared }}-${{ hashFiles('**/conanfile.py') }}
+                      
+    - name: Install Conan
+      uses: turtlebrowser/get-conan@v1.2
+      
+    - name: Setup Conan
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: |
+        conan profile detect -f
+      
+    - name: Cleanup Prior Build
+      if: steps.cache.outputs.cache-hit == 'true'
+      continue-on-error: true
+      run: |
+        conan remove mtconnect_agent -c
+
+    - name: Build and Test C++ Agent
+      shell: bash
+      run: |
+        conan create . --build=missing -pr conan/profiles/gcc  -o shared=${{ matrix.shared }} -o with_docs=False -o cpack=True
+        
+  build_macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        shared: ["True", "False"]
+            
+    steps:
+    - name: Checkout Agent
+      uses: actions/checkout@v3
+
+    - name: Cache conan packages
+      id: cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.conan2
+        key: ${{ runner.os }}-build-${{ matrix.shared }}-${{ hashFiles('**/conanfile.py') }}
+                      
+    - name: Install Conan
+      uses: turtlebrowser/get-conan@v1.2
+      
+    - name: Setup Conan
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: |
+        conan profile detect -f
+      
+    - name: Cleanup Prior Build
+      if: steps.cache.outputs.cache-hit == 'true'
+      continue-on-error: true
+      run: |
+        conan remove mtconnect_agent -c
+
+    - name: Build and Test C++ Agent
+      shell: bash
+      run: |
+        conan profile detect -f
+        conan create . --build=missing -pr conan/profiles/macos  -o shared=${{ matrix.shared }} -o with_docs=False -o cpack=True
         
