@@ -18,6 +18,9 @@ on:
 jobs:
   build_windows:
     runs-on: windows-2019
+    env: 
+      CONAN_HOME: ""
+      ZIP_DIR: ""
     strategy:
       matrix:
         arch: ["x86", "amd64"]
@@ -36,8 +39,6 @@ jobs:
     steps:
     - name: Setup conan and zip directories
       run: |
-        ZIP_DIR="TBD"
-        CONAN_HOME="TBD"
         ruby -e @"
           base = ENV['GITHUB_WORKSPACE'].gsub('\\', '/').
             gsub(/\/[a-zA-Z]+$/, '')
@@ -45,6 +46,11 @@ jobs:
           puts %{ZIP_DIR=#{base}}
           puts %{CONAN_HOME=#{base}/conan2}
         "@ >> $GITHUB_ENV
+              
+    - name: Check dirs
+      run: |
+        echo $CONAN_HOME
+        echo $ZIP_DIR
               
     - name: Checkout Agent
       uses: actions/checkout@v3
