@@ -42,7 +42,8 @@ jobs:
           
           puts %{ZIP_DIR=#{base}}
           puts %{CONAN_HOME=#{base}/conan2}
-        "@
+        "@ >> "$GITHUB_ENV"
+        echo "$GITHUB_ENV"
       
     - name: Checkout Agent
       uses: actions/checkout@v3
