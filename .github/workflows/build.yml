@@ -41,8 +41,8 @@ jobs:
           base = ENV['GITHUB_WORKSPACE'].gsub('\\', '/').
             gsub(/\/[a-zA-Z]+$/, '')
           
-          puts "ZIP_DIR=#{base}"
-          puts "CONAN_HOME=#{base}/conan2"
+          puts %{ZIP_DIR=#{base}}
+          puts %{CONAN_HOME=#{base}/conan2}
         "@ >> "$GITHUB_ENV"
       
     - name: Checkout Agent
