@@ -132,7 +132,7 @@ jobs:
     - name: Build and Test C++ Agent
       shell: bash
       run: |
-        conan create . --build=missing -pr conan/profiles/gcc  -o shared=${{ matrix.shared }} -o with_docs=False -o cpack=True
+        conan create . --build=missing -pr conan/profiles/gcc  -o shared=${{ matrix.shared }} -o with_docs=False
         
   build_macos:
     runs-on: macos-latest
@@ -169,5 +169,5 @@ jobs:
       shell: bash
       run: |
         conan profile detect -f
-        conan create . --build=missing -pr conan/profiles/macos  -o shared=${{ matrix.shared }} -o with_docs=False -o cpack=True
+        conan create . --build=missing -pr conan/profiles/macos  -o shared=${{ matrix.shared }} -o with_docs=False
         
