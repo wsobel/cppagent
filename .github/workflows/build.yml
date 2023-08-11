@@ -36,15 +36,16 @@ jobs:
     steps:
     - name: Setup conan and zip directories
       run: |
+        ZIP_DIR="TBD"
+        CONAN_HOME="TBD"
         ruby -e @"
           base = ENV['GITHUB_WORKSPACE'].gsub('\\', '/').
             gsub(/\/[a-zA-Z]+$/, '')
           
           puts %{ZIP_DIR=#{base}}
           puts %{CONAN_HOME=#{base}/conan2}
-        "@ >> "$GITHUB_ENV"
-        echo "$GITHUB_ENV"
-      
+        "@ >> $GITHUB_ENV
+              
     - name: Checkout Agent
       uses: actions/checkout@v3
 
