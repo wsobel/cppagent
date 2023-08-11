@@ -16,23 +16,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  conan_home:
-    runs-on: windows-2019
-    outputs:
-      conan_dir: "${{ steps.base_path.outputs.result }}/conan2"
-      zip_dir: "${{ steps.base_path.outputs.result }}/"
-      
-    steps:
-    - name: Use Powershell to Create path
-      id: base_path
-      run: |
-        ruby -e "puts 'result=' + '${{ github.workspace }}'.gsub('\\', '/').sub(/\/[a-zA-Z]+$/, '')" >> "$env:GITHUB_OUTPUT"
-
   build_windows:
     runs-on: windows-2019
-    needs: conan_home
-    env:
-      CONAN_HOME: "${{ needs.conan_home.outputs.conan_dir }}"
     strategy:
       matrix:
         arch: ["x86", "amd64"]
@@ -49,6 +34,17 @@ jobs:
             shared: "True"
 
     steps:
+    - name: Setup conan and zip directories
+      run: |
+        echo $GITHUB_ENV
+        ruby -e @"
+          base = ENV['GITHUB_WORKSPACE'].gsub('\\', '/').
+            gsub(/\/[a-zA-Z]+$/, '')
+          
+          puts "ZIP_DIR=#{base}"
+          puts "CONAN_HOME=#{base}/conan2"
+        "@ >> "$GITHUB_ENV"
+      
     - name: Checkout Agent
       uses: actions/checkout@v3
 
@@ -76,7 +72,7 @@ jobs:
       
     - name: Build and Test C++ Agent
       run: |
-        conan create . --build=missing -pr conan/profiles/${{ matrix.profile }} -o with_docs=False -o cpack=True -o zip_destination=${{ needs.conan_home.outputs.zip_dir }} --test-folder= -c tools.build:skip_test=True -o shared=${{ matrix.shared }}
+        conan create . --build=missing -pr conan/profiles/${{ matrix.profile }} -o with_docs=False -o cpack=True -o zip_destination=$ZIP_DIR --test-folder= -c tools.build:skip_test=True -o shared=${{ matrix.shared }}
 
     - name: Release
       uses: softprops/action-gh-release@v1
@@ -85,7 +81,7 @@ jobs:
         name: Version ${{ github.ref_name }}
         draft: true
         files: |
-          ${{ needs.conan_home.outputs.zip_dir }}/agent*.zip
+          ${{ env.ZIP_DIR }}/agent*.zip
         token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
 
         
