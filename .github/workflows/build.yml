@@ -36,8 +36,13 @@ jobs:
     steps:
     - name: Setup conan and zip directories
       run: |
-        echo "ZIP_DIR=XXX" >> $env:GITHUB_ENV
-        echo "CONAN_HOME=YYY" >> $env:GITHUB_ENV
+        ruby -e @"
+          base = ENV['GITHUB_WORKSPACE'].gsub('\\', '/').
+            gsub(/\/[a-zA-Z]+$/, '')
+          
+          puts %{ZIP_DIR=#{base}}
+          puts %{CONAN_HOME=#{base}/conan2}
+        "@ >> $env:GITHUB_ENV
               
     - name: Check dirs
       run: |
