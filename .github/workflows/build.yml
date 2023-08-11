@@ -36,8 +36,8 @@ jobs:
     steps:
     - name: Setup conan and zip directories
       run: |
-        echo "ZIP_DIR=XXX" >> $GITHUB_ENV
-        echo "CONAN_HOME=YYY" >> $GITHUB_ENV
+        echo "ZIP_DIR=XXX" >> $env:GITHUB_ENV
+        echo "CONAN_HOME=YYY" >> $env:GITHUB_ENV
               
     - name: Check dirs
       run: |
