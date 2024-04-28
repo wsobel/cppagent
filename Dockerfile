@@ -106,9 +106,7 @@ ENV MTCONNECT_DIR="$MTCONNECT_DIR"
 ENV DEMO_DIR="$MTCONNECT_DIR/demo/agent"
 
 # install ruby for simulator
-# FIXME: test this without installing `unzip`
-RUN apt-get update \
-  && apt-get install -y ruby unzip
+RUN apt-get clean && apt-get update && apt-get install -y ruby zip
 
 # change to a new non-root user for better security.
 # this also adds the user to a group with the same name.
